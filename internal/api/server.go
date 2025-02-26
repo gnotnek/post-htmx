@@ -13,6 +13,7 @@ import (
 	"post-htmx/internal/jwt"
 	"post-htmx/internal/post"
 	"post-htmx/internal/postgres"
+	"post-htmx/internal/renderer"
 	"post-htmx/internal/user"
 	"syscall"
 	"time"
@@ -32,6 +33,9 @@ func NewServer() *Server {
 	// Initialize auth middleware
 	authMiddleware := auth.NewMiddleware(jwtService)
 
+	// init renderer
+	renderer := renderer.NewRenderer("internal/templates")
+
 	// Repo
 	userRepo := user.NewUserRepository(db)
 	postRepo := post.NewPostRepository(db)
@@ -49,18 +53,18 @@ func NewServer() *Server {
 
 	r := chi.NewRouter()
 
-	// Routes
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	// API routes
+	r.Get("/api", func(w http.ResponseWriter, r *http.Request) {
 		resp.WriteJSON(w, http.StatusOK, "Pong")
 	})
 
-	r.Route("/users", func(r chi.Router) {
+	r.Route("/api/v1/users", func(r chi.Router) {
 		r.Post("/register", userHandler.Register)
 		r.Post("/login", userHandler.Login)
 		r.Post("/refresh", userHandler.RefreshToken)
 	})
 
-	r.With(authMiddleware.AuthRequired).Route("/posts", func(r chi.Router) {
+	r.With(authMiddleware.AuthRequired).Route("/api/v1/posts", func(r chi.Router) {
 		r.Get("/", postHandler.FindAll)
 		r.Post("/", postHandler.Create)
 		r.Get("/{id}", postHandler.FindByID)
@@ -68,12 +72,20 @@ func NewServer() *Server {
 		r.Delete("/{id}", postHandler.Delete)
 	})
 
-	r.With(authMiddleware.AuthRequired).Route("/category", func(r chi.Router) {
+	r.With(authMiddleware.AuthRequired).Route("/api/v1/category", func(r chi.Router) {
 		r.Post("/", categoryHandler.CreateCategory)
 		r.Get("/", categoryHandler.GetCategories)
 		r.Get("/{id}", categoryHandler.GetCategory)
 		r.Put("/{id}", categoryHandler.UpdateCategory)
 		r.Delete("/{id}", categoryHandler.DeleteCategory)
+	})
+
+	// Web routes
+	r.Get("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("internal/templates/public"))).ServeHTTP)
+	r.Get("/home", func(w http.ResponseWriter, r *http.Request) {
+		renderer.Render(w, "index.html", map[string]interface{}{
+			"Title": "Home",
+		})
 	})
 
 	return &Server{

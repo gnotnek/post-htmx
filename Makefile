@@ -2,9 +2,9 @@
 build:
 	go build -o /tmp/bin/app main.go
 
-.PHONY: run
+.PHONY: run 
 run: build
-	/tmp/bin/app $(bin)
+	/tmp/bin/app
 
 .PHONY: test
 test:
@@ -25,3 +25,7 @@ run/live:
 		--build.exclude_dir "" \
 		--build.include_ext "go, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
 		--misc.clean_on_exit "true"
+
+.PHONY: run/dev
+run/dev:
+	go run . api

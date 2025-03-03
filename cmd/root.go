@@ -7,14 +7,14 @@ import (
 
 func Run() {
 	var command = &cobra.Command{
-		Use:   "project name",
-		Short: "A brief description of your application",
+		Use:   "Fullstack Go Post HTMX App",
+		Short: "i use this app to learn fullstack go",
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.HelpFunc()(cmd, args)
 		},
 	}
 
-	command.AddCommand(apiCmd(), webCmd())
+	command.AddCommand(webCmd())
 
 	if err := command.Execute(); err != nil {
 		log.Fatal().Msgf("failed to execute command, err: %v", err.Error())

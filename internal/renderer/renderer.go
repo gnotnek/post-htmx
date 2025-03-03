@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
-	"post-htmx/internal/api/resp"
+	"post-htmx/internal/web/resp"
 
 	"github.com/rs/zerolog/log"
 )
@@ -14,10 +14,7 @@ type Renderer struct {
 }
 
 func NewRenderer(templateDir string) *Renderer {
-	tmpl := template.Must(template.ParseFiles(
-		filepath.Join(templateDir, "layout.html"),
-		filepath.Join(templateDir, "index.html"),
-	))
+	tmpl := template.Must(template.ParseGlob(filepath.Join(templateDir, "*.html")))
 	return &Renderer{
 		templates: tmpl,
 	}

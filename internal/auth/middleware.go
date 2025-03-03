@@ -3,8 +3,8 @@ package auth
 import (
 	"context"
 	"net/http"
-	"post-htmx/internal/api/resp"
 	"post-htmx/internal/jwt"
+	"post-htmx/internal/web/resp"
 	"strings"
 )
 

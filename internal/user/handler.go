@@ -3,9 +3,9 @@ package user
 import (
 	"encoding/json"
 	"net/http"
-	"post-htmx/internal/api/resp"
 	"post-htmx/internal/entity"
 	"post-htmx/internal/jwt"
+	"post-htmx/internal/web/resp"
 )
 
 type httpHandler struct {

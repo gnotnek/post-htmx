@@ -3,8 +3,8 @@ package post
 import (
 	"encoding/json"
 	"net/http"
-	"post-htmx/internal/api/resp"
 	"post-htmx/internal/entity"
+	"post-htmx/internal/web/resp"
 	"strconv"
 
 	"github.com/rs/zerolog/log"

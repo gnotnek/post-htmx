@@ -1,3 +1,20 @@
-{{ define "content" }}
-<h1>Welcome to My Mini Blog</h1>
-{{ end }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        {{ block "navbar" .}}{{end}}
+    </header>
+    <main>
+        {{ block "content" . }}{{ end }}
+    </main>
+    <footer>
+        <p>&copy; 2024 Postgan. All rights reserved.</p>
+    </footer>
+</body>
+</html>

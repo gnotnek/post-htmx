@@ -14,7 +14,7 @@ func Run() {
 		},
 	}
 
-	command.AddCommand(apiCmd())
+	command.AddCommand(apiCmd(), webCmd())
 
 	if err := command.Execute(); err != nil {
 		log.Fatal().Msgf("failed to execute command, err: %v", err.Error())

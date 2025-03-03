@@ -13,7 +13,6 @@ import (
 	"post-htmx/internal/jwt"
 	"post-htmx/internal/post"
 	"post-htmx/internal/postgres"
-	"post-htmx/internal/renderer"
 	"post-htmx/internal/user"
 	"syscall"
 	"time"
@@ -32,9 +31,6 @@ func NewServer() *Server {
 
 	// Initialize auth middleware
 	authMiddleware := auth.NewMiddleware(jwtService)
-
-	// init renderer
-	renderer := renderer.NewRenderer("internal/templates")
 
 	// Repo
 	userRepo := user.NewUserRepository(db)
@@ -78,14 +74,6 @@ func NewServer() *Server {
 		r.Get("/{id}", categoryHandler.GetCategory)
 		r.Put("/{id}", categoryHandler.UpdateCategory)
 		r.Delete("/{id}", categoryHandler.DeleteCategory)
-	})
-
-	// Web routes
-	r.Get("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("internal/templates/public"))).ServeHTTP)
-	r.Get("/home", func(w http.ResponseWriter, r *http.Request) {
-		renderer.Render(w, r, "layout.html", map[string]interface{}{
-			"Title": "Home",
-		})
 	})
 
 	return &Server{

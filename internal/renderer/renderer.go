@@ -23,14 +23,27 @@ func NewRenderer(templateDir string) *Renderer {
 	}
 }
 
-func (r *Renderer) Render(w http.ResponseWriter, name string, data interface{}) {
+func (R *Renderer) Render(w http.ResponseWriter, r *http.Request, name string, data interface{}) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	err := r.templates.ExecuteTemplate(w, name, data)
+	err := R.templates.ExecuteTemplate(w, name, data)
 	if err != nil {
 		log.Error().Err(err).Msgf("failed to render template: %s", name)
 		resp.WriteError(w, err)
 	} else {
 		log.Info().Msgf("successfully rendered template: %s", name)
-		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (R *Renderer) TestRender(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("internal/templates/layout.html", "internal/templates/index.html"))
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	err := tmpl.ExecuteTemplate(w, "layout.html", map[string]interface{}{
+		"Title": "Home",
+	})
+	if err != nil {
+		log.Error().Err(err).Msgf("failed to render template: %s", "layout.html")
+		resp.WriteError(w, err)
+	} else {
+		log.Info().Msgf("successfully rendered template: %s", "layout.html")
 	}
 }

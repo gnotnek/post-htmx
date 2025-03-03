@@ -83,7 +83,7 @@ func NewServer() *Server {
 	// Web routes
 	r.Get("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("internal/templates/public"))).ServeHTTP)
 	r.Get("/home", func(w http.ResponseWriter, r *http.Request) {
-		renderer.Render(w, "index.html", map[string]interface{}{
+		renderer.Render(w, r, "layout.html", map[string]interface{}{
 			"Title": "Home",
 		})
 	})
